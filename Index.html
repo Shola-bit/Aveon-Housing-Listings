@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aveon Housing — Verified Apartments for Rent in Lagos & Ogun</title>
+  <meta name="description" content="Self-service rentals in Lagos and Ogun. Browse photos, video tours, real prices, and real-time availability — no agent middleman required." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────────────── */
+    :root {
+      --ink:        #111212;
+      --paper:      #F7F4EF;
+      --white:      #FFFFFF;
+      --terracotta: #C0542A;
+      --sand:       #E8DFD0;
+      --muted:      #6B6560;
+      --border:     #DDD8D1;
+      --green:      #1A7A4A;
+      --amber:      #B87400;
+      --red:        #B83232;
+      --radius:     10px;
+      --nav-h:      64px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    h1,h2,h3,h4 { font-family: 'Fraunces', serif; font-weight: 600; line-height: 1.2; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; width: 100%; object-fit: cover; }
+    button { cursor: pointer; font-family: inherit; }
+
+    /* ─── PAGE VISIBILITY ─────────────────────────────────────── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ─── NAV ─────────────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      height: var(--nav-h);
+      display: flex; align-items: center;
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto; width: 100%;
+      padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Fraunces', serif;
+      font-weight: 700; font-size: 20px;
+      color: var(--terracotta);
+      letter-spacing: -0.5px;
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 32px; list-style: none;
+    }
+    .nav-links a {
+      font-size: 14px; font-weight: 500; color: var(--muted);
+      transition: color .15s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+    .nav-cta {
+      background: var(--terracotta); color: var(--white);
+      border: none; border-radius: var(--radius);
+      padding: 10px 20px; font-size: 14px; font-weight: 600;
+      transition: background .15s;
+    }
+    .nav-cta:hover { background: #a84423; }
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; padding: 4px;
+    }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--ink); border-radius: 2px; }
+    .mobile-menu {
+      display: none; position: fixed; inset: var(--nav-h) 0 0 0;
+      background: var(--white); z-index: 99; padding: 32px 24px;
+      flex-direction: column; gap: 24px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-size: 22px; font-family: 'Fraunces', serif; font-weight: 600;
+      color: var(--ink); border-bottom: 1px solid var(--border); padding-bottom: 20px;
+    }
+    .mobile-cta {
+      background: var(--terracotta); color: var(--white);
+      border-radius: var(--radius); padding: 14px 24px;
+      font-size: 16px; font-weight: 600; text-align: center;
+      display: block; width: 100%;
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      background: var(--ink); color: var(--white);
+      padding: 64px 24px 32px;
+      margin-top: 80px;
+    }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-grid {
+      display: grid; grid-template-columns: 2fr 1fr 1.5fr;
+      gap: 48px; margin-bottom: 48px;
+    }
+    .footer-brand p { color: #9C9590; font-size: 14px; margin-top: 12px; max-width: 280px; line-height: 1.7; }
+    .footer-logo { font-family: 'Fraunces', serif; font-weight: 700; font-size: 20px; color: var(--terracotta); }
+    .footer-col h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #9C9590; margin-bottom: 16px; font-family: 'Inter', sans-serif; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul li a { color: #C8C2BB; font-size: 14px; transition: color .15s; }
+    .footer-col ul li a:hover { color: var(--white); }
+    .footer-col ul li { color: #C8C2BB; font-size: 14px; }
+    .footer-bottom {
+      border-top: 1px solid #2A2724;
+      padding-top: 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-bottom p { color: #6B6560; font-size: 13px; }
+
+    /* ─── WHATSAPP FAB ────────────────────────────────────────── */
+    .wa-fab {
+      position: fixed; bottom: 24px; right: 24px; z-index: 200;
+      background: #25D366; color: var(--white);
+      border-radius: 50px; padding: 14px 22px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; font-weight: 600;
+      box-shadow: 0 4px 20px rgba(0,0,0,.2);
+      transition: transform .15s, box-shadow .15s;
+      text-decoration: none;
+    }
+    .wa-fab:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,.25); }
+    .wa-fab svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+    /* ─── CONTAINER ───────────────────────────────────────────── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* ═══════════════════════════════════════════════════════════
+       HOME PAGE
+    ═══════════════════════════════════════════════════════════ */
+    /* Hero */
+    .hero {
+      padding: 80px 24px 64px;
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #EAF4EE; color: var(--green);
+      border-radius: 50px; padding: 6px 14px;
+      font-size: 13px; font-weight: 600; margin-bottom: 24px;
+    }
+    .hero-eyebrow::before { content: ''; display: block; width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+    .hero h1 { font-size: clamp(36px, 5vw, 58px); font-weight: 700; color: var(--ink); margin-bottom: 20px; }
+    .hero h1 em { font-style: italic; color: var(--terracotta); }
+    .hero-sub { font-size: 17px; color: var(--muted); line-height: 1.7; margin-bottom: 40px; max-width: 460px; }
+    .hero-stats { display: flex; gap: 32px; padding-top: 32px; border-top: 1px solid var(--border); }
+    .stat-item strong { display: block; font-size: 22px; font-weight: 700; font-family: 'Fraunces', serif; color: var(--ink); }
+    .stat-item span { font-size: 13px; color: var(--muted); }
+
+    /* Search box */
+    .search-box {
+      background: var(--white); border-radius: 16px;
+      padding: 28px; box-shadow: 0 2px 24px rgba(0,0,0,.08);
+      border: 1px solid var(--border);
+    }
+    .search-box h3 { font-size: 14px; font-weight: 600; margin-bottom: 20px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; font-family: 'Inter', sans-serif; }
+    .search-field { margin-bottom: 16px; }
+    .search-field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--ink); }
+    .search-field select {
+      width: 100%; padding: 12px 16px; border: 1px solid var(--border);
+      border-radius: var(--radius); background: var(--paper); font-size: 14px;
+      color: var(--ink); appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B6560' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
+      cursor: pointer;
+    }
+    .search-field select:focus { outline: 2px solid var(--terracotta); border-color: transparent; }
+    .search-btn {
+      width: 100%; background: var(--terracotta); color: var(--white);
+      border: none; border-radius: var(--radius); padding: 14px;
+      font-size: 15px; font-weight: 600; margin-top: 8px;
+      transition: background .15s;
+    }
+    .search-btn:hover { background: #a84423; }
+
+    /* Featured section */
+    .section { padding: 80px 0; }
+    .section-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 40px; }
+    .section-eyebrow { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--terracotta); margin-bottom: 8px; font-family: 'Inter', sans-serif; }
+    .section-title { font-size: clamp(28px, 4vw, 38px); color: var(--ink); }
+    .view-all { font-size: 14px; font-weight: 600; color: var(--terracotta); display: flex; align-items: center; gap: 6px; }
+    .view-all:hover { text-decoration: underline; }
+
+    /* Listing cards */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+    .card {
+      background: var(--white); border-radius: 14px; overflow: hidden;
+      border: 1px solid var(--border); transition: transform .2s, box-shadow .2s;
+      cursor: pointer;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,0,0,.1); }
+    .card-img { height: 200px; position: relative; overflow: hidden; }
+    .card-img img { height: 100%; transition: transform .3s; }
+    .card:hover .card-img img { transform: scale(1.04); }
+    .card-badge {
+      position: absolute; top: 12px; left: 12px;
+      padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 600;
+    }
+    .badge-available { background: #EAF4EE; color: var(--green); }
+    .badge-few { background: #FFF3E0; color: var(--amber); }
+    .badge-taken { background: #FDECEA; color: var(--red); }
+    .card-body { padding: 18px; }
+    .card-price { font-size: 18px; font-weight: 700; font-family: 'Fraunces', serif; color: var(--ink); margin-bottom: 4px; }
+    .card-name { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .card-loc { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 4px; margin-bottom: 12px; }
+    .card-meta { display: flex; gap: 16px; }
+    .card-meta span { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 4px; }
+    .card-rating { display: flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+    .card-rating .star { color: #F59E0B; }
+
+    /* How it works */
+    .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+    .how-step { }
+    .step-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--sand); color: var(--terracotta);
+      font-family: 'Fraunces', serif; font-size: 18px; font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .how-step h3 { font-size: 20px; margin-bottom: 10px; }
+    .how-step p { color: var(--muted); line-height: 1.7; }
+
+    /* Stats strip */
+    .stats-strip {
+      background: var(--ink); border-radius: 16px;
+      padding: 48px; margin: 0 24px;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 32px; text-align: center;
+    }
+    .strip-stat strong { display: block; font-family: 'Fraunces', serif; font-size: 40px; font-weight: 700; color: var(--white); }
+    .strip-stat span { font-size: 14px; color: #9C9590; }
+
+    /* CTA band */
+    .cta-band {
+      background: var(--terracotta); border-radius: 16px;
+      margin: 80px 24px; padding: 64px 48px;
+      text-align: center;
+    }
+    .cta-band h2 { font-size: clamp(28px, 4vw, 40px); color: var(--white); margin-bottom: 12px; }
+    .cta-band p { color: rgba(255,255,255,.8); margin-bottom: 32px; font-size: 17px; }
+    .btn-white {
+      display: inline-block; background: var(--white); color: var(--terracotta);
+      border-radius: var(--radius); padding: 14px 32px; font-size: 15px; font-weight: 700;
+      transition: transform .15s;
+    }
+    .btn-white:hover { transform: scale(1.03); }
+
+    /* ═══════════════════════════════════════════════════════════
+       LISTINGS PAGE
+    ═══════════════════════════════════════════════════════════ */
+    .listings-layout {
+      display: grid; grid-template-columns: 280px 1fr; gap: 40px; align-items: start;
+    }
+    .filters-panel {
+      position: sticky; top: calc(var(--nav-h) + 24px);
+      background: var(--white); border-radius: 14px; border: 1px solid var(--border); padding: 24px;
+    }
+    .filter-group { margin-bottom: 24px; }
+    .filter-group:last-child { margin-bottom: 0; }
+    .filter-group label { display: block; font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+    .filter-group select, .filter-group input[type="text"] {
+      width: 100%; padding: 10px 14px; border: 1px solid var(--border);
+      border-radius: var(--radius); font-size: 14px; background: var(--paper); color: var(--ink);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B6560' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
+    }
+    .filter-group select:focus { outline: 2px solid var(--terracotta); border-color: transparent; }
+    .toggle-row { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
+    .toggle { position: relative; display: inline-block; width: 40px; height: 22px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0; background: var(--border); border-radius: 50px; cursor: pointer; transition: .2s;
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%;
+      background: var(--white); top: 3px; left: 3px; transition: .2s;
+    }
+    .toggle input:checked + .toggle-slider { background: var(--green); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+    .toggle-label { font-size: 14px; color: var(--ink); font-weight: 500; }
+    .apply-btn {
+      width: 100%; background: var(--terracotta); color: var(--white);
+      border: none; border-radius: var(--radius); padding: 12px;
+      font-size: 14px; font-weight: 600; margin-top: 20px;
+      transition: background .15s;
+    }
+    .apply-btn:hover { background: #a84423; }
+    .listings-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+    .listings-header h1 { font-size: 28px; }
+    .results-count { font-size: 14px; color: var(--muted); margin-top: 4px; }
+
+    /* ═══════════════════════════════════════════════════════════
+       DETAIL PAGE
+    ═══════════════════════════════════════════════════════════ */
+    .detail-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--muted); font-size: 14px; font-weight: 500; margin-bottom: 28px;
+      padding: 8px 0; cursor: pointer;
+    }
+    .detail-back:hover { color: var(--ink); }
+    .detail-hero-img { height: 420px; border-radius: 16px; overflow: hidden; position: relative; margin-bottom: 40px; }
+    .detail-hero-img img { width: 100%; height: 100%; }
+
+    /* ─── GALLERY THUMBNAILS ──────────────────────────────── */
+    .thumb {
+      width: 56px; height: 40px; border-radius: 6px;
+      overflow: hidden; cursor: pointer; border: 2px solid transparent;
+      transition: border-color .15s; flex-shrink: 0;
+    }
+    .thumb.active { border-color: var(--white); }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .detail-layout { display: grid; grid-template-columns: 1fr 380px; gap: 48px; align-items: start; }
+    .detail-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 50px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+    .detail-title { font-size: clamp(28px, 4vw, 42px); margin-bottom: 8px; }
+    .detail-loc { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 15px; margin-bottom: 24px; }
+    .detail-price { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+    .detail-price-note { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+    .detail-specs { display: flex; gap: 24px; flex-wrap: wrap; padding: 24px; background: var(--white); border-radius: 14px; border: 1px solid var(--border); margin-bottom: 32px; }
+    .spec-item { display: flex; flex-direction: column; gap: 4px; }
+    .spec-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+    .spec-value { font-size: 16px; font-weight: 600; color: var(--ink); }
+    .detail-desc h3 { font-size: 22px; margin-bottom: 12px; }
+    .detail-desc p { color: var(--muted); line-height: 1.8; margin-bottom: 24px; }
+    .amenities-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+    .amenity-item { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+    .amenity-item::before { content: '✓'; color: var(--green); font-weight: 700; }
+
+    /* Booking card */
+    .booking-card {
+      background: var(--white); border-radius: 16px; border: 1px solid var(--border);
+      padding: 28px; position: sticky; top: calc(var(--nav-h) + 24px);
+    }
+    .booking-price { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+    .booking-price span { font-size: 14px; font-weight: 400; color: var(--muted); font-family: 'Inter', sans-serif; }
+    .booking-rating { display: flex; align-items: center; gap: 6px; font-size: 14px; margin-bottom: 24px; }
+    .book-btn {
+      width: 100%; background: var(--terracotta); color: var(--white);
+      border: none; border-radius: var(--radius); padding: 14px;
+      font-size: 15px; font-weight: 600; margin-bottom: 12px;
+      transition: background .15s;
+    }
+    .book-btn:hover { background: #a84423; }
+    .wa-btn {
+      width: 100%; background: #25D366; color: var(--white);
+      border: none; border-radius: var(--radius); padding: 14px;
+      font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background .15s;
+    }
+    .wa-btn:hover { background: #1eb356; }
+    .booking-note { font-size: 12px; color: var(--muted); text-align: center; margin-top: 16px; }
+
+    /* ═══════════════════════════════════════════════════════════
+       ABOUT PAGE
+    ═══════════════════════════════════════════════════════════ */
+    .about-hero { padding: 80px 0 48px; }
+    .page-eyebrow { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--terracotta); margin-bottom: 16px; font-family: 'Inter', sans-serif; }
+    .about-hero h1 { font-size: clamp(32px, 5vw, 52px); max-width: 720px; margin-bottom: 24px; }
+    .about-hero .lead { font-size: 18px; color: var(--muted); line-height: 1.8; max-width: 640px; }
+    .about-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; margin: 48px 0; }
+    .about-stat { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 24px; text-align: center; }
+    .about-stat strong { display: block; font-family: 'Fraunces', serif; font-size: 36px; font-weight: 700; color: var(--terracotta); margin-bottom: 4px; }
+    .about-stat span { font-size: 14px; color: var(--muted); }
+    .about-mission { padding: 48px; background: var(--ink); border-radius: 16px; margin-bottom: 48px; }
+    .about-mission h2 { color: var(--white); font-size: 28px; margin-bottom: 16px; }
+    .about-mission p { color: #9C9590; line-height: 1.8; font-size: 17px; }
+    .promises-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px; }
+    .promise-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 24px; }
+    .promise-card h3 { font-size: 17px; margin-bottom: 8px; }
+    .promise-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .promise-icon { font-size: 24px; margin-bottom: 12px; }
+
+    /* ═══════════════════════════════════════════════════════════
+       CONTACT PAGE
+    ═══════════════════════════════════════════════════════════ */
+    .contact-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; padding: 80px 0; }
+    .contact-channels { display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px; }
+    .channel-card {
+      background: var(--white); border: 1px solid var(--border); border-radius: 14px;
+      padding: 20px 24px; display: flex; align-items: center; gap: 16px;
+      transition: box-shadow .15s, transform .15s; cursor: pointer; text-decoration: none;
+    }
+    .channel-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); transform: translateY(-2px); }
+    .channel-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 20px; }
+    .channel-wa { background: #E8F9EE; }
+    .channel-phone { background: #EEF2FF; }
+    .channel-email { background: #FFF5F0; }
+    .channel-info strong { display: block; font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+    .channel-info span { font-size: 13px; color: var(--muted); }
+    .channel-badge { margin-left: auto; background: #EAF4EE; color: var(--green); padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 600; }
+    .offices { display: flex; flex-direction: column; gap: 16px; margin-top: 32px; }
+    .office-card { background: var(--sand); border-radius: 14px; padding: 20px 24px; }
+    .office-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+    .office-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .contact-form { background: var(--white); border-radius: 16px; border: 1px solid var(--border); padding: 36px; }
+    .contact-form h2 { font-size: 26px; margin-bottom: 6px; }
+    .contact-form .sub { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--ink); }
+    .form-group input, .form-group textarea {
+      width: 100%; padding: 12px 16px; border: 1px solid var(--border);
+      border-radius: var(--radius); font-size: 15px; font-family: inherit;
+      background: var(--paper); color: var(--ink); transition: border-color .15s;
+    }
+    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--terracotta); }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-submit {
+      width: 100%; background: var(--terracotta); color: var(--white);
+      border: none; border-radius: var(--radius); padding: 14px;
+      font-size: 15px; font-weight: 600; transition: background .15s;
+    }
+    .form-submit:hover { background: #a84423; }
+    .form-success { display: none; text-align: center; padding: 32px; color: var(--green); }
+    .form-success.show { display: block; }
+    .form-success svg { margin: 0 auto 16px; }
+
+    /* ─── RESPONSIVE ──────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 40px; }
+      .listings-layout { grid-template-columns: 1fr; }
+      .filters-panel { position: static; }
+      .detail-layout { grid-template-columns: 1fr; }
+      .booking-card { position: static; }
+      .how-grid { grid-template-columns: 1fr 1fr; }
+      .stats-strip { grid-template-columns: repeat(2,1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .contact-layout { grid-template-columns: 1fr; gap: 40px; }
+      .about-stats { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 640px) {
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .hero { padding: 48px 24px; }
+      .how-grid { grid-template-columns: 1fr; }
+      .stats-strip { grid-template-columns: 1fr 1fr; padding: 32px 24px; margin: 0 16px; }
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+      .promises-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .cta-band { margin: 40px 16px; padding: 40px 24px; }
+      .hero-stats { gap: 20px; flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─────────────────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="#" onclick="navigate('home'); return false;">Aveon Housing</a>
+    <ul class="nav-links">
+      <li><a href="#" onclick="navigate('home'); return false;" id="nav-home">Home</a></li>
+      <li><a href="#" onclick="navigate('listings'); return false;" id="nav-listings">Listings</a></li>
+      <li><a href="#" onclick="navigate('about'); return false;" id="nav-about">About</a></li>
+      <li><a href="#" onclick="navigate('contact'); return false;" id="nav-contact">Contact</a></li>
+    </ul>
+    <button class="nav-cta" onclick="navigate('listings')">Browse Apartments</button>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#" onclick="navigate('home'); toggleMenu(); return false;">Home</a>
+  <a href="#" onclick="navigate('listings'); toggleMenu(); return false;">Listings</a>
+  <a href="#" onclick="navigate('about'); toggleMenu(); return false;">About</a>
+  <a href="#" onclick="navigate('contact'); toggleMenu(); return false;">Contact</a>
+  <a class="mobile-cta" href="#" onclick="navigate('listings'); toggleMenu(); return false;">Browse Apartments</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     HOME PAGE
+═══════════════════════════════════════════════════════════════════ -->
+<div class="page active" id="page-home">
+
+  <!-- Hero -->
+  <section style="max-width:1200px;margin:0 auto;padding:80px 24px 64px;">
+    <div class="hero" style="padding:0;margin:0;max-width:100%;">
+      <div>
+        <div class="hero-eyebrow">142 apartments available now</div>
+        <h1>Find your perfect <em>Lagos</em> home.</h1>
+        <p class="hero-sub">Self-service rentals for students, young professionals, and families. Browse, view, and move in without the back-and-forth.</p>
+        <div class="hero-stats">
+          <div class="stat-item"><strong>4.9★</strong><span>Average rating</span></div>
+          <div class="stat-item"><strong>1,200+</strong><span>Tenants moved in</span></div>
+          <div class="stat-item"><strong>100%</strong><span>Verified listings</span></div>
+        </div>
+      </div>
+      <div class="search-box">
+        <h3>Find your apartment</h3>
+        <div class="search-field">
+          <label>Location</label>
+          <select id="hero-location">
+            <option value="">All locations (Lagos & Ogun)</option>
+            <option>Lekki — Lagos</option>
+            <option>Ikoyi — Lagos</option>
+            <option>Ikeja — Lagos</option>
+            <option>Yaba — Lagos</option>
+            <option>Magodo — Lagos</option>
+            <option>Sango Ota — Ogun</option>
+            <option>Ago Iwoye — Ogun</option>
+            <option>Abeokuta — Ogun</option>
+          </select>
+        </div>
+        <div class="search-field">
+          <label>Budget</label>
+          <select id="hero-budget">
+            <option value="">Any budget</option>
+            <option>Under ₦2M</option>
+            <option>₦2M – ₦5M</option>
+            <option>₦5M – ₦10M</option>
+            <option>₦10M+</option>
+          </select>
+        </div>
+        <div class="search-field">
+          <label>Bedrooms</label>
+          <select id="hero-beds">
+            <option value="">Any</option>
+            <option>1</option><option>2</option><option>3</option><option>4+</option>
+          </select>
+        </div>
+        <button class="search-btn" onclick="handleHeroSearch()">Browse Available Apartments</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Handpicked -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <div class="section-eyebrow">Handpicked for you</div>
+          <h2 class="section-title">Verified listings in high demand</h2>
+        </div>
+        <a class="view-all" href="#" onclick="navigate('listings'); return false;">View all →</a>
+      </div>
+      <div class="cards-grid" id="home-cards"></div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="section" style="background: var(--white); padding: 80px 0;">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:48px;">
+        <div class="section-eyebrow">How it works</div>
+        <h2 class="section-title">Renting made effortless.</h2>
+        <p style="color:var(--muted);margin-top:12px;font-size:17px;">Over 1,200 Nigerians have found their next home through Aveon Housing.</p>
+      </div>
+      <div class="how-grid">
+        <div class="how-step">
+          <div class="step-num">01</div>
+          <h3>Browse freely</h3>
+          <p>Filter by location, price, and bedrooms. See real photos and HD video tours upfront.</p>
+        </div>
+        <div class="how-step">
+          <div class="step-num">02</div>
+          <h3>Check availability</h3>
+          <p>Every listing shows live status — available, few spots left, or taken. No wasted calls.</p>
+        </div>
+        <div class="how-step">
+          <div class="step-num">03</div>
+          <h3>Book a viewing</h3>
+          <p>Schedule a visit via WhatsApp or our contact form. Move in with verified paperwork.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats strip -->
+  <div style="padding:80px 0 0;">
+    <div class="stats-strip">
+      <div class="strip-stat"><strong>142</strong><span>Available now</span></div>
+      <div class="strip-stat"><strong>1,200+</strong><span>Tenants placed</span></div>
+      <div class="strip-stat"><strong>100%</strong><span>Verified listings</span></div>
+      <div class="strip-stat"><strong>24h</strong><span>Response time</span></div>
+    </div>
+  </div>
+
+  <!-- CTA band -->
+  <div class="cta-band">
+    <h2>Ready to find your next home?</h2>
+    <p>No agent gatekeeping. No endless calls. Just real apartments at real prices.</p>
+    <a class="btn-white" href="#" onclick="navigate('listings'); return false;">Browse all apartments</a>
+  </div>
+
+</div><!-- /page-home -->
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     LISTINGS PAGE
+═══════════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-listings">
+  <div class="container" style="padding-top:48px; padding-bottom:80px;">
+    <div style="margin-bottom:32px;">
+      <div class="page-eyebrow">Listings</div>
+    </div>
+    <div class="listings-layout">
+
+      <!-- Sidebar filters -->
+      <aside class="filters-panel">
+        <h3 style="font-size:16px;margin-bottom:20px;">Filter apartments</h3>
+        <div class="filter-group">
+          <label>Location</label>
+          <select id="f-location" onchange="applyFilters()">
+            <option value="">All locations (Lagos & Ogun)</option>
+            <option value="lekki">Lekki — Lagos</option>
+            <option value="ikoyi">Ikoyi — Lagos</option>
+            <option value="ikeja">Ikeja — Lagos</option>
+            <option value="yaba">Yaba — Lagos</option>
+            <option value="magodo">Magodo — Lagos</option>
+            <option value="sango">Sango Ota — Ogun</option>
+            <option value="ago">Ago Iwoye — Ogun</option>
+            <option value="abeokuta">Abeokuta — Ogun</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Budget</label>
+          <select id="f-budget" onchange="applyFilters()">
+            <option value="">Any budget</option>
+            <option value="u2m">Under ₦2M</option>
+            <option value="2to5">₦2M – ₦5M</option>
+            <option value="5to10">₦5M – ₦10M</option>
+            <option value="10plus">₦10M+</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Bedrooms</label>
+          <select id="f-beds" onchange="applyFilters()">
+            <option value="">Any</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4+</option>
+          </select>
+        </div>
+        <div class="toggle-row">
+          <label class="toggle">
+            <input type="checkbox" id="f-available" onchange="applyFilters()">
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-label">Available only</span>
+        </div>
+        <button class="apply-btn" onclick="resetFilters()">Clear filters</button>
+      </aside>
+
+      <!-- Results -->
+      <div>
+        <div class="listings-header">
+          <div>
+            <h1>Available apartments</h1>
+            <p class="results-count" id="results-count">Showing all rentals in Lagos & Ogun</p>
+          </div>
+        </div>
+        <div class="cards-grid" id="listings-cards"></div>
+      </div>
+    </div>
+  </div>
+</div><!-- /page-listings -->
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     DETAIL PAGE
+═══════════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-detail">
+  <div class="container" style="padding-top:40px;padding-bottom:80px;">
+    <div class="detail-back" onclick="navigate('listings')">
+      ← Back to listings
+    </div>
+    <!-- Detail page image gallery -->
+    <div class="detail-hero-img" id="detail-gallery">
+      <img id="detail-img" src="" alt="" />
+      <div id="detail-badge" class="card-badge" style="position:absolute;top:20px;left:20px;font-size:14px;padding:6px 16px;border-radius:50px;font-weight:600;"></div>
+      <!-- Thumbnail strip — shown when listing has multiple photos -->
+      <div id="gallery-thumbs" style="
+        position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
+        display:flex; gap:8px; z-index:10;
+      "></div>
+    </div>
+    <div class="detail-layout">
+      <div>
+        <h1 class="detail-title" id="detail-name"></h1>
+        <div class="detail-loc" id="detail-loc">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span id="detail-loc-text"></span>
+        </div>
+        <div class="detail-specs" id="detail-specs"></div>
+        <div class="detail-desc">
+          <h3>About this apartment</h3>
+          <p id="detail-desc-text"></p>
+          <h3>Amenities</h3>
+          <div class="amenities-grid" id="detail-amenities"></div>
+        </div>
+      </div>
+
+      <!-- Booking card -->
+      <div class="booking-card">
+        <div class="booking-price" id="booking-price"></div>
+        <div class="booking-rating" id="booking-rating"></div>
+        <button class="book-btn" id="book-btn">Schedule a viewing</button>
+        <a class="wa-btn" id="wa-book-btn" href="#" target="_blank">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Ask on WhatsApp
+        </a>
+        <p class="booking-note">Free to enquire · No hidden fees · Verified listing</p>
+      </div>
+    </div>
+  </div>
+</div><!-- /page-detail -->
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     ABOUT PAGE
+═══════════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-about">
+  <div class="container">
+    <section class="about-hero">
+      <div class="page-eyebrow">About Aveon Housing</div>
+      <h1>Renting in Lagos shouldn't be a guessing game.</h1>
+      <p class="lead">We started Aveon Housing because finding a home in Lagos was broken — endless calls, mismatched expectations, mystery prices. Today we manage hundreds of verified apartments across Lagos and Ogun, and put every detail upfront so you can make confident decisions without an agent in the middle.</p>
+    </section>
+
+    <div class="about-stats">
+      <div class="about-stat"><strong>500+</strong><span>Properties managed</span></div>
+      <div class="about-stat"><strong>1,200+</strong><span>Tenants placed</span></div>
+      <div class="about-stat"><strong>100%</strong><span>Verified listings</span></div>
+      <div class="about-stat"><strong>12 yrs</strong><span>In business</span></div>
+    </div>
+
+    <div class="about-mission">
+      <h2>Our mission</h2>
+      <p>To put real, accurate housing information in the hands of every prospective tenant — so the right home finds you in days, not weeks.</p>
+    </div>
+
+    <h2 style="font-size:28px;margin-bottom:24px;">What we promise</h2>
+    <div class="promises-grid">
+      <div class="promise-card">
+        <div class="promise-icon">💰</div>
+        <h3>Real prices</h3>
+        <p>No hidden agent fees, no "small token" surprises. Every price you see is the price you pay.</p>
+      </div>
+      <div class="promise-card">
+        <div class="promise-icon">📷</div>
+        <h3>Real photos</h3>
+        <p>Professionally shot on-site, never stock. What you see is exactly what you'll get.</p>
+      </div>
+      <div class="promise-card">
+        <div class="promise-icon">🟢</div>
+        <h3>Real availability</h3>
+        <p>Status updated daily across the catalog. Available means available — right now.</p>
+      </div>
+      <div class="promise-card">
+        <div class="promise-icon">🤝</div>
+        <h3>Real people</h3>
+        <p>Local team based in Lagos & Ogun, ready when you need us. 24-hour response, always.</p>
+      </div>
+    </div>
+
+    <div class="cta-band" style="margin:64px 0 0;">
+      <h2>Ready to look around?</h2>
+      <p>Hundreds of homes are waiting. Filter, compare, and book a viewing in minutes.</p>
+      <a class="btn-white" href="#" onclick="navigate('listings'); return false;">Browse Available Apartments</a>
+    </div>
+  </div>
+</div><!-- /page-about -->
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CONTACT PAGE
+═══════════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-contact">
+  <div class="container">
+    <div style="padding-top:64px;margin-bottom:12px;">
+      <div class="page-eyebrow">Get in touch</div>
+      <h1 style="font-size:clamp(32px,5vw,48px);">We're here to help.</h1>
+      <p style="color:var(--muted);font-size:17px;margin-top:12px;">Tell us what you're looking for and we'll match you with an apartment — or just say hi on WhatsApp.</p>
+    </div>
+    <div class="contact-layout">
+      <div>
+        <div class="contact-channels">
+          <a class="channel-card" href="https://wa.me/2348083876891?text=Hi%20Aveon%20Housing%2C%20I'd%20like%20to%20ask%20about%20an%20apartment." target="_blank">
+            <div class="channel-icon channel-wa">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            </div>
+            <div class="channel-info">
+              <strong>WhatsApp</strong>
+              <span>+234 808 387 6891</span>
+            </div>
+            <div class="channel-badge">Fastest response</div>
+          </a>
+          <a class="channel-card" href="tel:+2348083876891">
+            <div class="channel-icon channel-phone">📞</div>
+            <div class="channel-info">
+              <strong>Call us</strong>
+              <span>+234 808 387 6891 · Mon–Sat, 9am–6pm</span>
+            </div>
+          </a>
+          <a class="channel-card" href="mailto:aveonhousingetaccomodations@gmail.com">
+            <div class="channel-icon channel-email">✉️</div>
+            <div class="channel-info">
+              <strong>Email</strong>
+              <span>aveonhousingetaccomodations@gmail.com</span>
+            </div>
+          </a>
+        </div>
+
+        <h3 style="font-size:18px;margin-bottom:16px;">Our offices</h3>
+        <div class="offices">
+          <div class="office-card">
+            <h4>Ogun — Ago Iwoye</h4>
+            <p>28, Ijesha Road, Ago Iwoye<br>Ogun State, Nigeria</p>
+          </div>
+          <div class="office-card">
+            <h4>Ogun — Sango Ota</h4>
+            <p>4, Prince Dapo Adepoju Street, Sango Ota<br>Ogun State, Nigeria</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form">
+        <h2>Send a message</h2>
+        <p class="sub">We respond within 24 hours.</p>
+        <div id="contact-form-wrap">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full name</label>
+              <input type="text" id="c-name" placeholder="Emeka Okafor" />
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="tel" id="c-phone" placeholder="+234..." />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="c-email" placeholder="you@example.com" />
+          </div>
+          <div class="form-group">
+            <label>Message</label>
+            <textarea id="c-message" placeholder="Tell us what you're looking for — location, budget, move-in date..."></textarea>
+          </div>
+          <button class="form-submit" onclick="submitForm()">Send Message</button>
+        </div>
+        <div class="form-success" id="form-success">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#1A7A4A" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>
+          <h3 style="color:var(--green);font-size:22px;margin-bottom:8px;">Message sent!</h3>
+          <p style="color:var(--muted);font-size:14px;">We'll get back to you within 24 hours. You can also reach us instantly on WhatsApp.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /page-contact -->
+
+<!-- ─── FOOTER ─────────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">Aveon Housing</div>
+        <p>Verified rentals across Lagos and Ogun. Browse, view, and move in — without the back-and-forth.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#" onclick="navigate('listings'); return false;">All Listings</a></li>
+          <li><a href="#" onclick="navigate('about'); return false;">About</a></li>
+          <li><a href="#" onclick="navigate('contact'); return false;">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li>+234 808 387 6891</li>
+          <li>aveonhousingetaccomodations@gmail.com</li>
+          <li>28, Ijesha Road, Ago Iwoye, Ogun State</li>
+          <li>4, Prince Dapo Adepoju Street, Sango Ota, Ogun State</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Aveon Housing Realty. All rights reserved. · Lagos & Ogun State, Nigeria</p>
+    </div>
+  </div>
+</footer>
+
+<!-- WhatsApp FAB -->
+<a class="wa-fab" href="https://wa.me/2348083876891?text=Hi%20Aveon%20Housing%2C%20I'd%20like%20to%20ask%20about%20an%20apartment." target="_blank">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  Chat with us
+</a>
+
+<script>
+/* ─── CONTENTFUL CONFIG ─────────────────────────────────── */
+// Replace these two values with your own from Contentful → Settings → API Keys
+const SPACE_ID    = 'zrei1m84bqha';
+const ACCESS_TOKEN = 'BccoJrr34VxVQOKAY9FjR81Trz6TR55vt2lEKFw6msY';
+const CMS_URL = `https://cdn.contentful.com/spaces/${SPACE_ID}/entries?content_type=listing&include=1`;
+
+let LISTINGS = [];
+
+async function loadListings() {
+  try {
+    const res = await fetch(CMS_URL, {
+      headers: { Authorization: `Bearer ${ACCESS_TOKEN}` }
+    });
+    const data = await res.json();
+
+    LISTINGS = data.items.map(item => {
+      const f = item.fields;
+
+      // ─── Handle Many Images (capital I field ID) ──────────
+      let images = [];
+
+      if (f.Image && Array.isArray(f.Image)) {
+        // Loop through each linked image asset reference
+        images = f.Image.map(imgRef => {
+          const assetId = imgRef.sys.id;
+          const asset = data.includes && data.includes.Asset
+            ? data.includes.Asset.find(a => a.sys.id === assetId)
+            : null;
+          if (asset && asset.fields.file) {
+            return 'https:' + asset.fields.file.url + '?w=800&q=80';
+          }
+          return null;
+        }).filter(Boolean); // strip any nulls from failed lookups
+      }
+
+      // Fallback image if no photos have been uploaded yet
+      const fallbackImg = 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80';
+      const primaryImg  = images.length > 0 ? images[0] : fallbackImg;
+
+      return {
+        id:          item.sys.id,
+        name:        f.name,
+        status:      f.status,
+        price:       f.price,
+        priceNum:    f.priceNumber,
+        rating:      f.rating,
+        location:    f.location,
+        locationKey: f.locationKey,
+        beds:        f.bedrooms,
+        baths:       f.bathrooms,
+        sqft:        f.squareFeet,
+        img:         primaryImg,  // first image → used on listing cards
+        images:      images,      // all images → used in detail gallery
+        desc:        f.description,
+        amenities:   f.amenities || []
+      };
+    });
+
+    // Render whichever page is currently active
+    renderHomeCards();
+    renderListings(LISTINGS);
+
+  } catch (err) {
+    console.error('Could not load listings from Contentful:', err);
+    // If Contentful fetch fails, fall back to the built-in sample data
+    LISTINGS = FALLBACK_LISTINGS;
+    renderHomeCards();
+    renderListings(LISTINGS);
+  }
+}
+
+/* ─── FALLBACK DATA (shown if Contentful is not yet connected) ── */
+const FALLBACK_LISTINGS = [
+  {
+    id: 'azure-palms-studio',
+    name: 'Azure Palms Studio',
+    status: 'Available',
+    price: '₦4.5M/year',
+    priceNum: 4500000,
+    rating: 4.9,
+    location: 'Ikate, Lekki Phase 1',
+    locationKey: 'lekki',
+    beds: 2, baths: 2, sqft: 1100,
+    img: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80',
+    desc: 'A bright, modern 2-bedroom apartment in the heart of Lekki Phase 1. Floor-to-ceiling windows, a designer kitchen, and 24/7 power. Walking distance to Ebeano Supermarket and the Lekki-Epe Expressway access.',
+    amenities: ['24/7 Power supply', 'Running water', 'Secure parking', 'Swimming pool', 'Gym access', 'High-speed internet', 'CCTV security', 'Serviced compound']
+  },
+  {
+    id: 'continental-loft',
+    name: 'The Continental Loft',
+    status: 'Few Spots Left',
+    price: '₦8.2M/year',
+    priceNum: 8200000,
+    rating: 5.0,
+    location: 'Banana Island, Ikoyi',
+    locationKey: 'ikoyi',
+    beds: 3, baths: 3, sqft: 2100,
+    img: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80',
+    desc: 'A premium 3-bedroom loft on the exclusive Banana Island. Panoramic lagoon views, marble interiors, and a private rooftop terrace. One of Lagos\'s most coveted addresses for professionals and executives.',
+    amenities: ['24/7 Power supply', 'Rooftop terrace', 'Concierge service', 'Lagoon views', 'Smart home system', 'In-unit laundry', 'High-speed fibre', 'Private garage']
+  },
+  {
+    id: 'ikeja-grove',
+    name: 'Ikeja Grove Residences',
+    status: 'Available',
+    price: '₦3.2M/year',
+    priceNum: 3200000,
+    rating: 4.7,
+    location: 'GRA, Ikeja',
+    locationKey: 'ikeja',
+    beds: 2, baths: 2, sqft: 950,
+    img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+    desc: 'A well-maintained 2-bedroom in the tranquil Ikeja GRA. Perfect for families and professionals working on Lagos Island or in Ikeja. Gated estate with full-time security and generators.',
+    amenities: ['24/7 Power supply', 'Gated estate', 'Full-time security', 'Parking space', 'Borehole water', 'Serene environment', 'Easy highway access', 'Children playground']
+  },
+  {
+    id: 'yaba-creative',
+    name: 'Yaba Creative Studio',
+    status: 'Available',
+    price: '₦1.8M/year',
+    priceNum: 1800000,
+    rating: 4.6,
+    location: 'Herbert Macaulay, Yaba',
+    locationKey: 'yaba',
+    beds: 1, baths: 1, sqft: 480,
+    img: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80',
+    desc: 'A compact, stylishly finished studio in the heart of Yaba tech district. Ideal for young professionals, students at UNILAG, or digital workers. Minutes from public transit and co-working hubs.',
+    amenities: ['Fibre internet', '24/7 Power', 'Security', 'Proximity to UNILAG', 'Public transit access', 'Kitchen appliances', 'Air conditioning', 'Modern finishes']
+  },
+  {
+    id: 'magodo-family-home',
+    name: 'Magodo Family Home',
+    status: 'Taken',
+    price: '₦5.5M/year',
+    priceNum: 5500000,
+    rating: 4.8,
+    location: 'Phase 2, Magodo',
+    locationKey: 'magodo',
+    beds: 3, baths: 4, sqft: 2400,
+    img: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&q=80',
+    desc: 'A spacious family home in the quiet Magodo Phase 2 estate. Large living areas, four bathrooms, and a private garden. Well-suited for families relocating to Lagos or needing space to work from home.',
+    amenities: ['Private garden', 'Study room', 'Guest toilet', 'BQ quarters', 'Bore hole', 'Solar backup', 'Gated estate', 'Car park for 3 cars']
+  },
+  {
+    id: 'abeokuta-villa',
+    name: 'Abeokuta Hilltop Villa',
+    status: 'Available',
+    price: '₦3.8M/year',
+    priceNum: 3800000,
+    rating: 4.9,
+    location: 'Oke-Mosan, Abeokuta',
+    locationKey: 'abeokuta',
+    beds: 4, baths: 4, sqft: 2800,
+    img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
+    desc: 'A stunning hilltop villa in the prestigious Oke-Mosan area of Abeokuta. Four bedrooms with panoramic views, a full BQ, and a mature garden. Serene setting for families seeking quality living outside Lagos.',
+    amenities: ['Panoramic hilltop views', '4 bedrooms + BQ', 'Mature garden', 'Solar + generator', 'Borehole', '24/7 security', 'Tiled compound', 'Easy access road']
+  }
+]; // end FALLBACK_LISTINGS
+
+/* ─── ROUTING ────────────────────────────────────────────── */
+let currentListing = null;
+
+function navigate(page, listingId) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+
+  if (page === 'detail' && listingId) {
+    currentListing = LISTINGS.find(l => l.id === listingId);
+    if (currentListing) renderDetail(currentListing);
+    document.getElementById('page-detail').classList.add('active');
+  } else {
+    document.getElementById('page-' + page).classList.add('active');
+    const navEl = document.getElementById('nav-' + page);
+    if (navEl) navEl.classList.add('active');
+  }
+
+  if (page === 'home') renderHomeCards();
+  if (page === 'listings') renderListings(LISTINGS);
+
+  window.scrollTo(0, 0);
+}
+
+/* ─── CARD BUILDER ──────────────────────────────────────── */
+function buildCard(listing) {
+  const badgeClass = listing.status === 'Available' ? 'badge-available' :
+                     listing.status === 'Taken' ? 'badge-taken' : 'badge-few';
+  const img = listing.img;
+  return `
+    <div class="card" onclick="navigate('detail','${listing.id}')">
+      <div class="card-img">
+        <img src="${img}" alt="${listing.name}" loading="lazy" />
+        <span class="card-badge ${badgeClass}">${listing.status}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-price">${listing.price}</div>
+        <div class="card-rating"><span class="star">★</span> ${listing.rating}</div>
+        <div class="card-name">${listing.name}</div>
+        <div class="card-loc">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          ${listing.location}
+        </div>
+        <div class="card-meta">
+          <span>🛏 ${listing.beds} Bed${listing.beds>1?'s':''}</span>
+          <span>🚿 ${listing.baths} Bath${listing.baths>1?'s':''}</span>
+          <span>📐 ${listing.sqft} sqft</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderHomeCards() {
+  const featured = LISTINGS.filter(l => l.status !== 'Taken').slice(0, 4);
+  document.getElementById('home-cards').innerHTML = featured.map(buildCard).join('');
+}
+
+function renderListings(list) {
+  const container = document.getElementById('listings-cards');
+  if (list.length === 0) {
+    container.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--muted);"><p style="font-size:18px;margin-bottom:8px;">No apartments match your filters.</p><p>Try broadening your search.</p></div>`;
+  } else {
+    container.innerHTML = list.map(buildCard).join('');
+  }
+  const count = document.getElementById('results-count');
+  if (count) count.textContent = `${list.length} home${list.length!==1?'s':''} match your filters`;
+}
+
+/* ─── FILTERS ───────────────────────────────────────────── */
+function applyFilters() {
+  const loc = document.getElementById('f-location').value;
+  const budget = document.getElementById('f-budget').value;
+  const beds = document.getElementById('f-beds').value;
+  const availOnly = document.getElementById('f-available').checked;
+
+  let results = LISTINGS.filter(l => {
+    if (loc && l.locationKey !== loc) return false;
+    if (availOnly && l.status === 'Taken') return false;
+    if (beds) {
+      if (beds === '4' && l.beds < 4) return false;
+      if (beds !== '4' && l.beds !== parseInt(beds)) return false;
+    }
+    if (budget) {
+      if (budget === 'u2m' && l.priceNum >= 2000000) return false;
+      if (budget === '2to5' && (l.priceNum < 2000000 || l.priceNum > 5000000)) return false;
+      if (budget === '5to10' && (l.priceNum < 5000000 || l.priceNum > 10000000)) return false;
+      if (budget === '10plus' && l.priceNum < 10000000) return false;
+    }
+    return true;
+  });
+  renderListings(results);
+}
+
+function resetFilters() {
+  document.getElementById('f-location').value = '';
+  document.getElementById('f-budget').value = '';
+  document.getElementById('f-beds').value = '';
+  document.getElementById('f-available').checked = false;
+  renderListings(LISTINGS);
+}
+
+/* ─── HERO SEARCH ───────────────────────────────────────── */
+function handleHeroSearch() {
+  const loc = document.getElementById('hero-location').value;
+  const budget = document.getElementById('hero-budget').value;
+  const beds = document.getElementById('hero-beds').value;
+  navigate('listings');
+  // Map display values to filter keys
+  const locMap = {
+    'Lekki — Lagos': 'lekki', 'Ikoyi — Lagos': 'ikoyi', 'Ikeja — Lagos': 'ikeja',
+    'Yaba — Lagos': 'yaba', 'Magodo — Lagos': 'magodo', 'Sango Ota — Ogun': 'sango',
+    'Ago Iwoye — Ogun': 'ago', 'Abeokuta — Ogun': 'abeokuta'
+  };
+  const budgetMap = {
+    'Under ₦2M': 'u2m', '₦2M – ₦5M': '2to5', '₦5M – ₦10M': '5to10', '₦10M+': '10plus'
+  };
+  setTimeout(() => {
+    if (loc) document.getElementById('f-location').value = locMap[loc] || '';
+    if (budget) document.getElementById('f-budget').value = budgetMap[budget] || '';
+    if (beds) document.getElementById('f-beds').value = beds;
+    applyFilters();
+  }, 50);
+}
+
+/* ─── GALLERY ────────────────────────────────────────────── */
+function renderGallery(images) {
+  const mainImg = document.getElementById('detail-img');
+  const thumbsContainer = document.getElementById('gallery-thumbs');
+
+  // Set first image as the main display
+  if (images.length > 0) mainImg.src = images[0];
+
+  // Only show thumbnail strip when there is more than one photo
+  if (images.length <= 1) {
+    thumbsContainer.innerHTML = '';
+    return;
+  }
+
+  thumbsContainer.innerHTML = images.map((url, index) => `
+    <div class="thumb ${index === 0 ? 'active' : ''}"
+         onclick="switchImage('${url}', this)">
+      <img src="${url}" alt="Photo ${index + 1}" loading="lazy" />
+    </div>
+  `).join('');
+}
+
+function switchImage(url, thumbEl) {
+  document.getElementById('detail-img').src = url;
+  document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+  thumbEl.classList.add('active');
+}
+
+/* ─── DETAIL PAGE ───────────────────────────────────────── */
+function renderDetail(l) {
+  // Render gallery — all images if available, else fall back to single img
+  renderGallery(l.images && l.images.length > 0 ? l.images : [l.img]);
+  document.getElementById('detail-img').alt = l.name;
+  document.getElementById('detail-name').textContent = l.name;
+  document.getElementById('detail-loc-text').textContent = l.location;
+
+  const badgeClass = l.status === 'Available' ? 'badge-available' :
+                     l.status === 'Taken' ? 'badge-taken' : 'badge-few';
+  const badge = document.getElementById('detail-badge');
+  badge.textContent = l.status;
+  badge.className = 'card-badge ' + badgeClass;
+
+  document.getElementById('detail-specs').innerHTML = `
+    <div class="spec-item"><div class="spec-label">Bedrooms</div><div class="spec-value">🛏 ${l.beds}</div></div>
+    <div class="spec-item"><div class="spec-label">Bathrooms</div><div class="spec-value">🚿 ${l.baths}</div></div>
+    <div class="spec-item"><div class="spec-label">Area</div><div class="spec-value">📐 ${l.sqft} sqft</div></div>
+    <div class="spec-item"><div class="spec-label">Rating</div><div class="spec-value">★ ${l.rating}</div></div>
+  `;
+
+  document.getElementById('detail-desc-text').textContent = l.desc;
+  document.getElementById('detail-amenities').innerHTML = l.amenities.map(a => `<div class="amenity-item">${a}</div>`).join('');
+
+  document.getElementById('booking-price').innerHTML = `${l.price} <span>/year</span>`;
+  document.getElementById('booking-rating').innerHTML = `<span style="color:#F59E0B;">★★★★★</span>&nbsp;${l.rating} · Verified listing`;
+
+  const waMsg = encodeURIComponent(`Hi Aveon Housing, I'd like to enquire about ${l.name} in ${l.location} (${l.price}).`);
+  document.getElementById('wa-book-btn').href = `https://wa.me/2348083876891?text=${waMsg}`;
+
+  const bookBtn = document.getElementById('book-btn');
+  if (l.status === 'Taken') {
+    bookBtn.textContent = 'Currently unavailable';
+    bookBtn.disabled = true;
+    bookBtn.style.background = '#ccc'; bookBtn.style.cursor = 'not-allowed';
+  } else {
+    bookBtn.textContent = 'Schedule a viewing';
+    bookBtn.disabled = false;
+    bookBtn.style.background = ''; bookBtn.style.cursor = '';
+    bookBtn.onclick = () => {
+      window.open(`https://wa.me/2348083876891?text=${waMsg}`, '_blank');
+    };
+  }
+}
+
+/* ─── CONTACT FORM ──────────────────────────────────────── */
+function submitForm() {
+  const name = document.getElementById('c-name').value.trim();
+  const email = document.getElementById('c-email').value.trim();
+  const msg = document.getElementById('c-message').value.trim();
+  if (!name || !email || !msg) {
+    alert('Please fill in your name, email, and message.');
+    return;
+  }
+  document.getElementById('contact-form-wrap').style.display = 'none';
+  document.getElementById('form-success').classList.add('show');
+}
+
+/* ─── MOBILE MENU ───────────────────────────────────────── */
+function toggleMenu() {
+  document.getElementById('mobile-menu').classList.toggle('open');
+}
+
+/* ─── INIT ──────────────────────────────────────────────── */
+// loadListings() fetches from Contentful if credentials are set,
+// otherwise falls back to FALLBACK_LISTINGS automatically.
+loadListings();
+</script>
+</body>
+</html>
