@@ -928,83 +928,318 @@ async function loadListings() {
       let images = [];
 
       if (f.Image && Array.isArray(f.Image)) {
-        // Loop through each linked image asset reference
-        images = f.Image.map(imgRef => {
-          const assetId = imgRef.sys.id;
-          const asset = data.includes && data.includes.Asset
-            ? data.includes.Asset.find(a => a.sys.id === assetId)
-            : null;
-          if (asset && asset.fields.file) {
-            return 'https:' + asset.fields.file.url + '?w=800&q=80';
-          }
-          return null;
-        }).filter(Boolean); // strip any nulls from failed lookups
-      }
+        // Loop throughpanel">
+        <h3 style="font-size:16px;margin-bottom:20px;">Filter apartments</h3>
+        <div class="filter-group">
+          <label>Location</label>
+          <select id="f-location" onchange="applyFilters()">
+            <option value="">All locations (Lagos & Ogun)</option>
+            <option value="lekki">Lekki — Lagos</option>
+            <option value="ikoyi">Ikoyi — Lagos</option>
+            <option value="ikeja">Ikeja — Lagos</option>
+            <option value="yaba">Yaba — Lagos</option>
+            <option value="magodo">Magodo — Lagos</option>
+            <option value="sango">Sango Ota — Ogun</option>
+            <option value="ago">Ago Iwoye — Ogun</option>
+            <option value="abeokuta">Abeokuta — Ogun</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Budget</label>
+          <select id="f-budget" onchange="applyFilters()">
+            <option value="">Any budget</option>
+            <option value="u2m">Under ₦2M</option>
+            <option value="2to5">₦2M – ₦5M</option>
+            <option value="5to10">₦5M – ₦10M</option>
+            <option value="10plus">₦10M+</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Bedrooms</label>
+          <select id="f-beds" onchange="applyFilters()">
+            <option value="">Any</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4+</option>
+          </select>
+        </div>
+        <div class="toggle-row">
+          <label class="toggle">
+            <input type="checkbox" id="f-available" onchange="applyFilters()">
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-label">Available only</span>
+        </div>
+        <button class="apply-btn" onclick="resetFilters()">Clear filters</button>
+      </aside>
 
-      // Fallback image if no photos have been uploaded yet
-      const fallbackImg = 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80';
-      const primaryImg  = images.length > 0 ? images[0] : fallbackImg;
+      <!-- Results -->
+      <div>
+        <div class="listings-header">
+          <div>
+            <h1>Available apartments</h1>
+            <p class="results-count" id="results-count">Showing all rentals in Lagos & Ogun</p>
+          </div>
+        </div>
+        <div class="cards-grid" id="listings-cards"></div>
+      </div>
+    </div>
+  </div>
+</div><!-- /page-listings -->
 
-      return {
-        id:          item.sys.id,
-        name:        f.name,
-        status:      f.status,
-        price:       f.price,
-        priceNum:    f.priceNumber,
-        rating:      f.rating,
-        location:    f.location,
-        locationKey: f.locationKey,
-        beds:        f.bedrooms,
-        baths:       f.bathrooms,
-        sqft:        f.squareFeet,
-        img:         primaryImg,  // first image → used on listing cards
-        images:      images,      // all images → used in detail gallery
-        desc:        f.description,
-        amenities:   f.amenities || []
-      };
+<!-- ═══════════════════════════════════════════════════════════════════
+     DETAIL PAGE
+═══════════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-detail">
+  <div class="container" style="padding-top:40px;padding-bottom:80px;">
+    <div class="detail-back" onclick="navigate('listings')">
+      ← Back to listings
+    </div>
+    <!-- Detail page image gallery -->
+    <div class="detail-hero-img" id="detail-gallery">
+      <img id="detail-img" src="" alt="" />
+      <div id="detail-badge" class="card-badge" style="position:absolute;top:20px;left:20px;font-size:14px;padding:6px 16px;border-radius:50px;font-weight:600;"></div>
+      <!-- Thumbnail strip — shown when listing has multiple photos -->
+      <div id="gallery-thumbs" style="
+        position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
+        display:flex; gap:8px; z-index:10;
+      "></div>
+    </div>
+    <div class="detail-layout">
+      <div>
+        <h1 class="detail-title" id="detail-name"></h1>
+        <div class="detail-loc" id="detail-loc">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span id="detail-loc-text"></span>
+        </div>
+        <div class="detail-specs" id="detail-specs"></div>
+        <div class="detail-desc">
+          <h3>About this apartment</h3>
+          <p id="detail-desc-text"></p>
+          <h3>Amenities</h3>
+          <div class="amenities-grid" id="detail-amenities"></div>
+        </div>
+      </div>
+
+      <!-- Booking card -->
+      <div class="booking-card">
+        <div class="booking-price" id="booking-price"></div>
+        <div class="booking-rating" id="booking-rating"></div>
+        <button class="book-btn" id="book-btn">Schedule a viewing</button>
+        <a class="wa-btn" id="wa-book-btn" href="#" target="_blank">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Ask on WhatsApp
+        </a>
+        <p class="booking-note">Free to enquire · No hidden fees · Verified listing</p>
+      </div>
+    </div>
+  </div>
+</div><!-- /page-detail -->
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     ABOUT PAGE
+═══════════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-about">
+  <div class="container">
+    <section class="about-hero">
+      <div class="page-eyebrow">About Aveon Housing</div>
+      <h1>Renting in Lagos shouldn't be a guessing game.</h1>
+      <p class="lead">We started Aveon Housing because finding a home in Lagos was broken — endless calls, mismatched expectations, mystery prices. Today we manage hundreds of verified apartments across Lagos and Ogun, and put every detail upfront so you can make confident decisions without an agent in the middle.</p>
+    </section>
+
+    <div class="about-stats">
+      <div class="about-stat"><strong>500+</strong><span>Properties managed</span></div>
+      <div class="about-stat"><strong>1,200+</strong><span>Tenants placed</span></div>
+      <div class="about-stat"><strong>100%</strong><span>Verified listings</span></div>
+      <div class="about-stat"><strong>12 yrs</strong><span>In business</span></div>
+    </div>
+
+    <div class="about-mission">
+      <h2>Our mission</h2>
+      <p>To put real, accurate housing information in the hands of every prospective tenant — so the right home finds you in days, not weeks.</p>
+    </div>
+
+    <h2 style="font-size:28px;margin-bottom:24px;">What we promise</h2>
+    <div class="promises-grid">
+      <div class="promise-card">
+        <div class="promise-icon">💰</div>
+        <h3>Real prices</h3>
+        <p>No hidden agent fees, no "small token" surprises. Every price you see is the price you pay.</p>
+      </div>
+      <div class="promise-card">
+        <div class="promise-icon">📷</div>
+        <h3>Real photos</h3>
+        <p>Professionally shot on-site, never stock. What you see is exactly what you'll get.</p>
+      </div>
+      <div class="promise-card">
+        <div class="promise-icon">🟢</div>
+        <h3>Real availability</h3>
+        <p>Status updated daily across the catalog. Available means available — right now.</p>
+      </div>
+      <div class="promise-card">
+        <div class="promise-icon">🤝</div>
+        <h3>Real people</h3>
+        <p>Local team based in Lagos & Ogun, ready when you need us. 24-hour response, always.</p>
+      </div>
+    </div>
+
+    <div class="cta-band" style="margin:64px 0 0;">
+      <h2>Ready to look around?</h2>
+      <p>Hundreds of homes are waiting. Filter, compare, and book a viewing in minutes.</p>
+      <a class="btn-white" href="#" onclick="navigate('listings'); return false;">Browse Available Apartments</a>
+    </div>
+  </div>
+</div><!-- /page-about -->
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CONTACT PAGE
+═══════════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-contact">
+  <div class="container">
+    <div style="padding-top:64px;margin-bottom:12px;">
+      <div class="page-eyebrow">Get in touch</div>
+      <h1 style="font-size:clamp(32px,5vw,48px);">We're here to help.</h1>
+      <p style="color:var(--muted);font-size:17px;margin-top:12px;">Tell us what you're looking for and we'll match you with an apartment — or just say hi on WhatsApp.</p>
+    </div>
+    <div class="contact-layout">
+      <div>
+        <div class="contact-channels">
+          <a class="channel-card" href="https://wa.me/2348083876891?text=Hi%20Aveon%20Housing%2C%20I'd%20like%20to%20ask%20about%20an%20apartment." target="_blank">
+            <div class="channel-icon channel-wa">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            </div>
+            <div class="channel-info">
+              <strong>WhatsApp</strong>
+              <span>+234 808 387 6891</span>
+            </div>
+            <div class="channel-badge">Fastest response</div>
+          </a>
+          <a class="channel-card" href="tel:+2348083876891">
+            <div class="channel-icon channel-phone">📞</div>
+            <div class="channel-info">
+              <strong>Call us</strong>
+              <span>+234 808 387 6891 · Mon–Sat, 9am–6pm</span>
+            </div>
+          </a>
+          <a class="channel-card" href="mailto:aveonhousingetaccomodations@gmail.com">
+            <div class="channel-icon channel-email">✉️</div>
+            <div class="channel-info">
+              <strong>Email</strong>
+              <span>aveonhousingetaccomodations@gmail.com</span>
+            </div>
+          </a>
+        </div>
+
+        <h3 style="font-size:18px;margin-bottom:16px;">Our offices</h3>
+        <div class="offices">
+          <div class="office-card">
+            <h4>Ogun — Ago Iwoye</h4>
+            <p>28, Ijesha Road, Ago Iwoye<br>Ogun State, Nigeria</p>
+          </div>
+          <div class="office-card">
+            <h4>Ogun — Sango Ota</h4>
+            <p>4, Prince Dapo Adepoju Street, Sango Ota<br>Ogun State, Nigeria</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form">
+        <h2>Send a message</h2>
+        <p class="sub">We respond within 24 hours.</p>
+        <div id="contact-form-wrap">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full name</label>
+              <input type="text" id="c-name" placeholder="Emeka Okafor" />
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="tel" id="c-phone" placeholder="+234..." />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="c-email" placeholder="you@example.com" />
+          </div>
+          <div class="form-group">
+            <label>Message</label>
+            <textarea id="c-message" placeholder="Tell us what you're looking for — location, budget, move-in date..."></textarea>
+          </div>
+          <button class="form-submit" onclick="submitForm()">Send Message</button>
+        </div>
+        <div class="form-success" id="form-success">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#1A7A4A" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>
+          <h3 style="color:var(--green);font-size:22px;margin-bottom:8px;">Message sent!</h3>
+          <p style="color:var(--muted);font-size:14px;">We'll get back to you within 24 hours. You can also reach us instantly on WhatsApp.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /page-contact -->
+
+<!-- ─── FOOTER ─────────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">Aveon Housing</div>
+        <p>Verified rentals across Lagos and Ogun. Browse, view, and move in — without the back-and-forth.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#" onclick="navigate('listings'); return false;">All Listings</a></li>
+          <li><a href="#" onclick="navigate('about'); return false;">About</a></li>
+          <li><a href="#" onclick="navigate('contact'); return false;">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li>+234 808 387 6891</li>
+          <li>aveonhousingetaccomodations@gmail.com</li>
+          <li>28, Ijesha Road, Ago Iwoye, Ogun State</li>
+          <li>4, Prince Dapo Adepoju Street, Sango Ota, Ogun State</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Aveon Housing Realty. All rights reserved. · Lagos & Ogun State, Nigeria</p>
+    </div>
+  </div>
+</footer>
+
+<!-- WhatsApp FAB -->
+<a class="wa-fab" href="https://wa.me/2348083876891?text=Hi%20Aveon%20Housing%2C%20I'd%20like%20to%20ask%20about%20an%20apartment." target="_blank">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  Chat with us
+</a>
+
+<script>
+/* ─── CONTENTFUL CONFIG ─────────────────────────────────── */
+// Replace these two values with your own from Contentful → Settings → API Keys
+const SPACE_ID    = 'zrei1m84bqha';
+const ACCESS_TOKEN = 'BccoJrr34VxVQOKAY9FjR81Trz6TR55vt2lEKFw6msY';
+const CMS_URL = `https://cdn.contentful.com/spaces/${SPACE_ID}/entries?content_type=listing&include=1`;
+
+let LISTINGS = [];
+
+async function loadListings() {
+  try {
+    const res = await fetch(CMS_URL, {
+      headers: { Authorization: `Bearer ${ACCESS_TOKEN}` }
     });
+    const data = await res.json();
 
-    // Render whichever page is currently active
-    renderHomeCards();
-    renderListings(LISTINGS);
+    LISTINGS = data.items.map(item => {
+      const f = item.fields;
 
-  } catch (err) {
-    console.error('Could not load listings from Contentful:', err);
-    // If Contentful fetch fails, fall back to the built-in sample data
-    LISTINGS = FALLBACK_LISTINGS;
-    renderHomeCards();
-    renderListings(LISTINGS);
-  }
-}
+      // ─── Handle Many Images (capital I field ID) ──────────
+      let images = [];
 
-/* ─── FALLBACK DATA (shown if Contentful is not yet connected) ── */
-const FALLBACK_LISTINGS = [
-  {
-    id: 'azure-palms-studio',
-    name: 'Azure Palms Studio',
-    status: 'Available',
-    price: '₦4.5M/year',
-    priceNum: 4500000,
-    rating: 4.9,
-    location: 'Ikate, Lekki Phase 1',
-    locationKey: 'lekki',
-    beds: 2, baths: 2, sqft: 1100,
-    img: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80',
-    desc: 'A bright, modern 2-bedroom apartment in the heart of Lekki Phase 1. Floor-to-ceiling windows, a designer kitchen, and 24/7 power. Walking distance to Ebeano Supermarket and the Lekki-Epe Expressway access.',
-    amenities: ['24/7 Power supply', 'Running water', 'Secure parking', 'Swimming pool', 'Gym access', 'High-speed internet', 'CCTV security', 'Serviced compound']
-  },
-  {
-    id: 'continental-loft',
-    name: 'The Continental Loft',
-    status: 'Few Spots Left',
-    price: '₦8.2M/year',
-    priceNum: 8200000,
-    rating: 5.0,
-    location: 'Banana Island, Ikoyi',
-    locationKey: 'ikoyi',
-    beds: 3, baths: 3, sqft: 2100,
-    img: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80',
-    desc: 'A premium 3-bedroom loft on the exclusive Banana Island. Panoramic lagoon views, marble interiors, and a private rooftop terrace. One of Lagos\'s most coveted addresses for professionals and executives.',
+      if (f.Image && Array.isArray(f.Image)) {
+        // Loop throughnd a private rooftop terrace. One of Lagos\'s most coveted addresses for professionals and executives.',
     amenities: ['24/7 Power supply', 'Rooftop terrace', 'Concierge service', 'Lagoon views', 'Smart home system', 'In-unit laundry', 'High-speed fibre', 'Private garage']
   },
   {
